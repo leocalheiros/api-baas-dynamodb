@@ -82,6 +82,7 @@ pip install --target ./package nomedapackage
 
 ## Informações técnicas:
 - Para garantir a validação dos campos na requisição, utilizei a biblioteca Cerberus para facilitar esse processo, onde as configurações dela se encontram na pasta `validators` como schema desejado, onde a mesma é chamada nas views dos processos depois.
+- Implementei um tratamento de erros personalizados, retornando esses erros em situações específicas do código, você pode encontrar os mesmos em `/src/erros/`, onde temos a pasta types com os tipos de erros, e o error_handler que será chamado na view para mostrar esses erros personalizados.
 - Foram implementadas interfaces para garantir a conformidade das classes com os contratos especificados, as quais se encontram na pasta `interface` dos módulos do projeto.
 - O projeto inclui o design pattern adapter para conectar diferentes partes do sistema, como adaptadores de solicitação, o qual se encontra na pasta `main/adapter`, que utiliza os http_types na pasta `views`.
 - O projeto também possui o design pattern `composer` que são responsáveis por construir lógicas complexas, a partir de partes menores, o qual se encontra na pasta `main/composers` e são chamados no routes.py.
