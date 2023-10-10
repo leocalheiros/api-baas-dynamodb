@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: API Lambda Clean Architeture
+
+Globals:
+  Function:
+    Timeout: 3
+    MemorySize: 128
+
+Resources:
+  ApiLambdaCleanArchFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./api
+      Handler: lambda_handler.lambda_handler
+      Runtime: python3.11
+      Architectures:
+        - x86_64
+      Events:
+        ApiGateway:
+          Type: Api
+          Properties:
+            Path: /{proxy+}
+            Method: ANY
+
+Outputs:
+  ApiLambdaCleantApi:
+    Description: "API Gateway endpoint URL"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/{proxy+}/"
+  ApiLambdaCleanFunction:
+    Description: "Lambda Function ARN"
+    Value: !GetAtt ApiLambdaCleanArchFunction.Arn
+  ApiLambdaCleanFunctionIamRole:
+    Description: "IAM Role created for Lambda Function"
+    Value: !GetAtt ApiLambdaCleanArchFunctionRole.Arn

@@ -1,0 +1,5 @@
+requests
+aws-wsgi
+flask
+boto3
+Cerberus
