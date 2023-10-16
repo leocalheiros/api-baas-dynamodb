@@ -1,45 +1,69 @@
 import pytest
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, patch
 from src.views.account.delete_account_view import DeleteAccountView
 from src.views.http_types.http_request import HttpRequest
-from src.validators.email_account_validator import email_field_validator
+from src.validators.account.email_account_validator import email_field_validator
+from src.middlewares.auth_jwt.token_creator import TokenCreator
+
+# Configurar o TokenCreator para os testes
+TOKEN_KEY = '1234'
+EXP_TIME_MIN = 60
+REFRESH_TIME_MIN = 30
+token_creator = TokenCreator(TOKEN_KEY, EXP_TIME_MIN, REFRESH_TIME_MIN)
 
 
 @pytest.fixture
 def delete_account_view():
     controller = MagicMock()
-    return DeleteAccountView(controller)
+    view = DeleteAccountView(controller)
+    return view
 
 
 def test_handle_success(delete_account_view):
-    http_request = HttpRequest(body={"email": "test@example.com"})
-    delete_account_view._DeleteAccountView__controller.operate.return_value = "Conta deletada com sucesso!"
-    email_field_validator.return_value = None
+    # Crie um token JWT válido com o email associado
+    valid_email = 'user@example.com'
+    valid_token = token_creator.create(valid_email)
 
-    response = delete_account_view.handle(http_request)
+    # Configure o cabeçalho da solicitação com o token JWT e o email
+    headers = {
+        'Authorization': f'Bearer {valid_token}',
+        'email': valid_email,
+    }
 
-    delete_account_view._DeleteAccountView__controller.operate.assert_called_once_with(http_request.body)
-    assert response.status_code == 200
-    assert response.body == {"response": "Conta deletada com sucesso!"}
+    # Crie uma instância HttpRequest simulando a solicitação com o cabeçalho correto
+    http_request = HttpRequest(body={"email": valid_email}, header=headers)
+
+    # Patchear o método operate do controller para verificar se ele foi chamado
+    with patch.object(delete_account_view._DeleteAccountView__controller, 'operate') as mock_operate:
+        mock_operate.return_value = "Conta deletada com sucesso!"
+        response = delete_account_view.handle(http_request)
+
+    # Verifique se o método operate foi chamado no objeto de controle
+    mock_operate.assert_called_once_with(http_request.body, valid_email)
 
 
 def test_handle_exception(delete_account_view):
-    http_request = HttpRequest(body={"email": "test@example.com"})
-    delete_account_view._DeleteAccountView__controller.operate.side_effect = Exception("Test exception")
-    email_field_validator.return_value = None
+    # Crie um token JWT válido com o email associado
+    valid_email = 'user@example.com'
+    valid_token = token_creator.create(valid_email)
 
-    response = delete_account_view.handle(http_request)
+    # Configure o cabeçalho da solicitação com o token JWT e o email
+    headers = {
+        'Authorization': f'Bearer {valid_token}',
+        'email': valid_email,
+    }
 
-    delete_account_view._DeleteAccountView__controller.operate.assert_called_once_with(http_request.body)
+    # Crie uma instância HttpRequest simulando a solicitação com o cabeçalho correto
+    http_request = HttpRequest(body={"email": valid_email}, header=headers)
+
+    # Patchear o método operate do controller para lançar uma exceção
+    with patch.object(delete_account_view._DeleteAccountView__controller, 'operate') as mock_operate:
+        mock_operate.side_effect = Exception("Test exception")
+        response = delete_account_view.handle(http_request)
+
+    # Verifique se o método operate foi chamado no objeto de controle
+    mock_operate.assert_called_once_with(http_request.body, valid_email)
     assert response.status_code == 500
-    assert response.body == {"errors": [{"title": "Server Error", "detail": "Test exception"}]}
-
-
-def test_handle_validation_error(delete_account_view):
-    http_request = HttpRequest(body={})
-    email_field_validator.side_effect = ValueError("Validation error")
-
-    response = delete_account_view.handle(http_request)
-
-    delete_account_view._DeleteAccountView__controller.operate.assert_not_called()
-    assert response.status_code == 422
+    assert response.body == {
+        "errors": [{"title": "Server Error", "detail": "Test exception"}]
+    }

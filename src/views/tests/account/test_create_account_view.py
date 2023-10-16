@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import MagicMock
 from src.views.account.create_account_view import CreateAccountView
 from src.views.http_types.http_request import HttpRequest
-from src.validators.create_account_validator import all_fields_validator
+from src.validators.account.create_account_validator import all_fields_validator
 
 
 @pytest.fixture
