@@ -19,7 +19,7 @@ def test_operate_success(withdraw_saldo_controller):
     withdraw_saldo_controller._WithdrawSaldoController__account_model.check_account_exists.return_value = True
     withdraw_saldo_controller._WithdrawSaldoController__saldo_model.check_saldo.return_value = 100
 
-    response = withdraw_saldo_controller.operate(email, amount)
+    response = withdraw_saldo_controller.operate({"email": email, "amount": amount}, email)
 
     withdraw_saldo_controller._WithdrawSaldoController__saldo_model.add_saldo.assert_called_once_with(email, -amount)
     assert response == f"Saque de {amount} realizado com sucesso na conta de {email}"
@@ -32,7 +32,7 @@ def test_operate_account_not_found(withdraw_saldo_controller):
     withdraw_saldo_controller._WithdrawSaldoController__account_model.check_account_exists.return_value = False
 
     with pytest.raises(HttpNotFoundError):
-        withdraw_saldo_controller.operate(email, amount)
+        withdraw_saldo_controller.operate({"email": email, "amount": amount}, email)
 
 
 def test_operate_insufficient_balance(withdraw_saldo_controller):
@@ -43,4 +43,4 @@ def test_operate_insufficient_balance(withdraw_saldo_controller):
     withdraw_saldo_controller._WithdrawSaldoController__saldo_model.check_saldo.return_value = 100
 
     with pytest.raises(HttpInsufficientBalanceError):
-        withdraw_saldo_controller.operate(email, amount)
+        withdraw_saldo_controller.operate({"email": email, "amount": amount}, email)
