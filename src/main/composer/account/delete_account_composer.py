@@ -3,7 +3,7 @@ from src.controllers.account.delete_account_controller import DeleteAccountContr
 from src.models.account_model import AccountModel
 
 
-def delete_account_composer():
+def delete_account_composer(next_token=None):
     repo = AccountModel()
     controller = DeleteAccountController(repo)
     view = DeleteAccountView(controller)

@@ -3,7 +3,7 @@ from src.controllers.account.get_account_by_email_controller import GetAccountBy
 from src.models.account_model import AccountModel
 
 
-def get_account_by_email_composer():
+def get_account_by_email_composer(next_token=None):
     repo = AccountModel()
     controller = GetAccountByEmailController(repo)
     view = GetAccountByEmailView(controller)

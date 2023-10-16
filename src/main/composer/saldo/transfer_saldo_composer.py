@@ -4,7 +4,7 @@ from src.models.saldo_model import SaldoModel
 from src.models.account_model import AccountModel
 
 
-def transfer_saldo_composer():
+def transfer_saldo_composer(next_token=None):
     repo1 = AccountModel()
     repo2 = SaldoModel()
     controller = TransferSaldoController(repo1, repo2)
