@@ -1,17 +1,21 @@
 from src.models.interface.account_interface import AccountRepositoryInterface
-from src.controllers.interface.controller_interface import ControllerInterface
+from src.controllers.interface.account_controller_interface import ControllerInterface
 from src.errors.types.http_not_found import HttpNotFoundError
+from src.errors.types.http_unauthorized import HttpUnauthorizedError
 
 
 class GetAccountByEmailController(ControllerInterface):
     def __init__(self, model: AccountRepositoryInterface):
         self.__model = model
 
-    def operate(self, email: str) -> str:
-        self.__validate(email)
+    def operate(self, account: dict, request_email: str) -> str:
+        email = account.get("email")
+        self.__validate(email, request_email)
         conta = self.__model.get_account_by_email(email)
         return f'Conta encontrada: {conta}'
 
-    def __validate(self, email: str):
+    def __validate(self, email: str, request_email: str):
+        if email != request_email:
+            raise HttpUnauthorizedError("Email na solicitação não corresponde ao email nos cabeçalhos!")
         if not self.__model.check_account_exists(email):
             raise HttpNotFoundError('Conta não existente no banco de dados')
