@@ -14,10 +14,8 @@ class TransferView(ViewInterface):
         try:
             request_data = http_request.body
             all_fields_validator(request_data)
-            source_email = request_data.get("source_email")
-            target_email = request_data.get("target_email")
-            amount = request_data.get("amount")
-            response = self.__controller.operate(source_email, target_email, amount)
+            request_email = http_request.header.get("email")
+            response = self.__controller.operate(request_data, request_email)
             return HttpResponse(status_code=200, body={"response": response})
         except Exception as exception:
             return handle_errors(exception)

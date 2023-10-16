@@ -14,9 +14,8 @@ class WithdrawView(ViewInterface):
         try:
             request_data = http_request.body
             email_and_amount_validator(request_data)
-            email = request_data.get("email")
-            amount = request_data.get("amount")
-            response = self.__controller.operate(email, amount)
+            request_email = http_request.header.get("email")
+            response = self.__controller.operate(request_data, request_email)
             return HttpResponse(status_code=200, body={"response": response})
         except Exception as exception:
             return handle_errors(exception)
