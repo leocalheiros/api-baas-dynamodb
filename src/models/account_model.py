@@ -23,7 +23,11 @@ class AccountModel(AccountRepositoryInterface):
 
     def get_account_by_email(self, email: str):
         response = table.get_item(Key={'email': email})
-        return response['Item']
+
+        if 'Item' in response:
+            return response['Item']
+        else:
+            return None
 
     def check_account_exists(self, email: str) -> bool:
         response = table.get_item(
