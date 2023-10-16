@@ -1,5 +1,5 @@
 from src.models.interface.account_interface import AccountRepositoryInterface
-from src.controllers.interface.controller_interface import ControllerInterface
+from src.controllers.interface.account_controller_interface import ControllerInterface
 from src.errors.types.http_not_found import HttpNotFoundError
 
 
