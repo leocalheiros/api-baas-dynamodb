@@ -4,5 +4,5 @@ from abc import ABC, abstractmethod
 class SaldoControllerInterface(ABC):
 
     @abstractmethod
-    def operate(self, email: str, quantidade: int) -> str:
+    def operate(self, request_data: dict, request_email: str) -> str:
         pass
