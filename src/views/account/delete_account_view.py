@@ -1,9 +1,9 @@
 from src.views.http_types.http_request import HttpRequest
 from src.views.http_types.http_response import HttpResponse
 from src.views.interface.views_interface import ViewInterface
-from src.controllers.interface.controller_interface import ControllerInterface
+from src.controllers.interface.account_controller_interface import ControllerInterface
 from src.errors.error_handler import handle_errors
-from src.validators.email_account_validator import email_field_validator
+from src.validators.account.email_account_validator import email_field_validator
 
 
 class DeleteAccountView(ViewInterface):
@@ -14,7 +14,8 @@ class DeleteAccountView(ViewInterface):
         try:
             request_data = http_request.body
             email_field_validator(request_data)
-            response = self.__controller.operate(request_data)
+            email = http_request.header.get('email')
+            response = self.__controller.operate(request_data, email)
             return HttpResponse(status_code=200, body={"response": response})
         except Exception as exception:
             return handle_errors(exception)

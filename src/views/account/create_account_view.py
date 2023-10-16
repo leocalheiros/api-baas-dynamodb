@@ -1,9 +1,9 @@
 from src.views.http_types.http_request import HttpRequest
 from src.views.http_types.http_response import HttpResponse
 from src.views.interface.views_interface import ViewInterface
-from src.controllers.interface.controller_interface import ControllerInterface
+from src.controllers.interface.account_controller_interface import ControllerInterface
 from src.errors.error_handler import handle_errors
-from src.validators.create_account_validator import all_fields_validator
+from src.validators.account.create_account_validator import all_fields_validator
 
 
 class CreateAccountView(ViewInterface):
