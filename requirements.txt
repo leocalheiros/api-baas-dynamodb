@@ -3,3 +3,7 @@ aws-wsgi
 flask
 boto3
 Cerberus
+PyJWT
+python-dotenv==1.0.0
+crcmod==1.7
+pix-utils==1.0.1
