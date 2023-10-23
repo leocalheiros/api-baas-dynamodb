@@ -37,7 +37,7 @@ def test_handle_success(deposit_saldo_view):
 
         response = deposit_saldo_view.handle(http_request)
 
-    mock_operate.assert_called_once_with({"email": valid_email, "amount": 100}, 100, valid_email)
+    mock_operate.assert_called_once_with({"email": valid_email, "amount": 100}, valid_email)
     assert response.status_code == 200
     assert response.body == {"response": "Depósito de 100 realizado com sucesso na conta de user@example.com"}
 
@@ -59,7 +59,7 @@ def test_handle_exception(deposit_saldo_view):
 
         response = deposit_saldo_view.handle(http_request)
 
-    mock_operate.assert_called_once_with({"email": valid_email, "amount": 100}, 100, valid_email)
+    mock_operate.assert_called_once_with({"email": valid_email, "amount": 100}, valid_email)
     assert response.status_code == 500
     assert response.body == {"errors": [{"title": "Server Error", "detail": "Test exception"}]}
 
@@ -89,7 +89,7 @@ def test_handle_unauthorized_error(deposit_saldo_view):
         mock_operate.side_effect = HttpUnauthorizedError("Unauthorized")
         response = deposit_saldo_view.handle(http_request)
 
-    mock_operate.assert_called_once_with({'email': 'user@example.com', 'amount': 100}, 100, 'different@example.com')
+    mock_operate.assert_called_once_with({'email': 'user@example.com', 'amount': 100}, 'different@example.com')
     assert response.status_code == 401
 
 
@@ -108,7 +108,7 @@ def test_handle_exception_error(deposit_saldo_view):
         mock_operate.side_effect = Exception("Test exception")
         response = deposit_saldo_view.handle(http_request)
 
-    mock_operate.assert_called_once_with(http_request.body, 100, valid_email)
+    mock_operate.assert_called_once_with(http_request.body, valid_email)
     assert response.status_code == 500
     assert response.body == {
         "errors": [{"title": "Server Error", "detail": "Test exception"}]
