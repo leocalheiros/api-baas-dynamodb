@@ -10,6 +10,7 @@ class FakePixController(PixControllerInterface):
     def generate_payload(self, chavepix, valor, nome, cidade, txtId):
         return "Generated Payload"
 
+
 @pytest.fixture
 def pix_view():
     controller = FakePixController()
@@ -47,7 +48,6 @@ def test_handle_exception(pix_view):
 
     exception = HttpBadRequest("Bad Request")
 
-    # Usando patch para configurar side_effect corretamente
     with patch.object(pix_view._PixView__controller, 'generate_payload') as mock_generate_payload:
         mock_generate_payload.side_effect = exception
         response = pix_view.handle(http_request)
