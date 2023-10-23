@@ -9,7 +9,7 @@ class PixController(PixControllerInterface):
         valor = self.validate_valor(valor)
 
         payload = Code(key=chavepix, name=nome, city=cidade, value=valor, identifier=txtId)
-        return payload
+        return self.__format_response(payload)
 
     def validate_valor(self, valor):
         if valor <= 0:
@@ -19,3 +19,11 @@ class PixController(PixControllerInterface):
     def format_chave_pix(self, chavepix):
         chavepix = chavepix.replace(".", "").replace("-", "").replace("/", "").replace("\\", "").replace(" ", "")
         return chavepix
+
+    def __format_response(self, payload) -> dict:
+        return {
+            "data": {
+                "status": "success",
+                "payload": payload
+            }
+        }
