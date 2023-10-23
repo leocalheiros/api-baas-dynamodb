@@ -8,14 +8,20 @@ class GetAccountByEmailController(ControllerInterface):
     def __init__(self, model: AccountRepositoryInterface):
         self.__model = model
 
-    def operate(self, account: dict, request_email: str) -> str:
+    def operate(self, account: dict, request_email: str) -> dict:
         email = account.get("email")
         self.__validate(email, request_email)
         conta = self.__model.get_account_by_email(email)
-        return f'Conta encontrada: {conta}'
+        return self.__format_response(conta)
 
     def __validate(self, email: str, request_email: str):
         if email != request_email:
             raise HttpUnauthorizedError("Email na solicitação não corresponde ao email nos cabeçalhos!")
         if not self.__model.check_account_exists(email):
             raise HttpNotFoundError('Conta não existente no banco de dados')
+
+    def __format_response(self, conta: dict) -> dict:
+        return {
+            "message": "success",
+            "data": conta
+        }

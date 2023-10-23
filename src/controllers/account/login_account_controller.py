@@ -9,11 +9,11 @@ class LoginAccountController(ControllerInterface):
     def __init__(self, model: AccountRepositoryInterface):
         self.__model = model
 
-    def operate(self, email: str, senha: str) -> str:
+    def operate(self, email: str, senha: str) -> dict:
         conta = self.__get_account(email)
         self.__validate(conta, senha)
         token = token_creator.create(email)
-        return f'Login bem-sucedido: Seja bem-vindo, {email}. Seu token é: {token}'
+        return self.__format_response(email, token)
 
     def __get_account(self, email: str):
         conta = self.__model.get_account_by_email(email)
@@ -24,3 +24,12 @@ class LoginAccountController(ControllerInterface):
     def __validate(self, conta, senha: str):
         if conta['senha'] != senha:
             raise HttpUnauthorizedError('Senha inválida!')
+
+    def __format_response(self, email: str, token: str) -> dict:
+        return {
+            "data": {
+                "status": "success",
+                "token": token,
+                "email": email
+            }
+        }

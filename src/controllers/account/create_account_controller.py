@@ -7,16 +7,22 @@ class CreateAccountController(ControllerInterface):
     def __init__(self, model: AccountRepositoryInterface) -> None:
         self.__model = model
 
-    def operate(self, account: dict) -> str:
+    def operate(self, account: dict) -> dict:
         self.__validate(account)
         self.__model.create_account(
             account.get("email"),
             account.get("senha"),
             account.get("saldo")
         )
-        return "Usuário criado com sucesso! Utilize seus dados inputados para fazer operações!"
+        return self.__format_response(account)
 
     def __validate(self, account: dict) -> None:
         email = account.get("email")
         if self.__model.check_account_exists(email):
             raise HttpNotFoundError("Email já existente no banco de dados!")
+
+    def __format_response(self, account: dict) -> dict:
+        return {
+            "status": "success",
+            "data": account
+        }
