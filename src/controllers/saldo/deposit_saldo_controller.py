@@ -10,15 +10,24 @@ class DepositSaldoController(SaldoControllerInterface):
         self.__account_model = account_model
         self.__saldo_model = saldo_model
 
-    def operate(self, request_data: dict, request_email: str) -> str:
+    def operate(self, request_data: dict, request_email: str) -> dict:
         email = request_data.get('email')
         amount = request_data.get('amount')
         self.__validate(email, request_email)
         self.__saldo_model.add_saldo(email, amount)
-        return f"Depósito de {amount} realizado com sucesso na conta de {email}"
+        return self.__format_response(email, amount)
 
     def __validate(self, email: str, request_email: str):
         if email != request_email:
             raise HttpUnauthorizedError("Email na solicitação não corresponde ao email nos cabeçalhos!")
         if not self.__account_model.check_account_exists(email):
             raise HttpNotFoundError("Conta não existente no banco de dados")
+
+    def __format_response(self, email: str, amount: int) -> dict:
+        return {
+            "data": {
+                "status": "success",
+                "amount": amount,
+                "email": email
+            }
+        }

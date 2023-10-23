@@ -11,14 +11,14 @@ class TransferSaldoController(SaldoControllerInterface):
         self.__account_model = account_model
         self.__saldo_model = saldo_model
 
-    def operate(self, request_data: dict, request_email: str) -> str:
+    def operate(self, request_data: dict, request_email: str) -> dict:
         source_email = request_data.get("source_email")
         target_email = request_data.get("target_email")
         amount = request_data.get("amount")
         self.__validate(source_email, target_email, amount, request_email)
         self.__saldo_model.add_saldo(target_email, amount)
         self.__saldo_model.add_saldo(source_email, -amount)
-        return f"Transferência de {amount} realizada com sucesso da conta de {source_email} para {target_email}"
+        return self.__format_response(source_email, target_email, amount)
 
     def __validate(self, source_email: str, target_email: str, amount: int, request_email: str) -> None:
         if source_email != request_email:
@@ -33,3 +33,13 @@ class TransferSaldoController(SaldoControllerInterface):
     def __check_saldo(self, email: str, amount: int) -> bool:
         source_saldo = self.__saldo_model.check_saldo(email)
         return source_saldo >= amount
+
+    def __format_response(self, source_email: str, target_email: str, amount: int) -> dict:
+        return {
+            "data": {
+                "status": "success",
+                "source_email": source_email,
+                "target_email": target_email,
+                "amount": amount
+            }
+        }

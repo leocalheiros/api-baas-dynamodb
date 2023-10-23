@@ -11,12 +11,12 @@ class WithdrawSaldoController(SaldoControllerInterface):
         self.__account_model = account_model
         self.__saldo_model = saldo_model
 
-    def operate(self, request_data: dict, request_email: str) -> str:
+    def operate(self, request_data: dict, request_email: str) -> dict:
         email = request_data.get("email")
         amount = request_data.get("amount")
         self.__validate(email, amount, request_email)
         self.__saldo_model.add_saldo(email, -amount)
-        return f"Saque de {amount} realizado com sucesso na conta de {email}"
+        return self.__format_response(email, amount)
 
     def __validate(self, email: str, amount: int, request_email: str) -> None:
         if email != request_email:
@@ -29,3 +29,12 @@ class WithdrawSaldoController(SaldoControllerInterface):
     def __check_saldo(self, email: str, amount: int) -> bool:
         source_saldo = self.__saldo_model.check_saldo(email)
         return source_saldo >= amount
+
+    def __format_response(self, email: str, amount: int) -> dict:
+        return {
+            "data": {
+                "status": "success",
+                "amount": amount,
+                "email": email
+            }
+        }
