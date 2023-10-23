@@ -24,7 +24,12 @@ def test_create_account_success(account_controller):
         "test@example.com", "password", 100
     )
 
-    assert response == "Usuário criado com sucesso! Utilize seus dados inputados para fazer operações!"
+    expected_response = {
+        "status": "success",
+        "data": account_data
+    }
+
+    assert response == expected_response
 
 
 def test_create_account_existing_email(account_controller):

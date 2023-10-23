@@ -22,7 +22,16 @@ def test_operate_success(withdraw_saldo_controller):
     response = withdraw_saldo_controller.operate({"email": email, "amount": amount}, email)
 
     withdraw_saldo_controller._WithdrawSaldoController__saldo_model.add_saldo.assert_called_once_with(email, -amount)
-    assert response == f"Saque de {amount} realizado com sucesso na conta de {email}"
+
+    expected_response = {
+        "data": {
+            "status": "success",
+            "amount": amount,
+            "email": email
+        }
+    }
+
+    assert response == expected_response
 
 
 def test_operate_account_not_found(withdraw_saldo_controller):

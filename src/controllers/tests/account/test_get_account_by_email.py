@@ -24,8 +24,15 @@ def test_get_account_by_email_success(get_account_by_email_controller):
     get_account_by_email_controller._GetAccountByEmailController__model.get_account_by_email.assert_called_once_with(
         email
     )
+    expected_response = {
+        "message": "success",
+        "data": {
+            "email": "test@example.com",
+            "saldo": 100
+        }
+    }
 
-    assert 'Conta encontrada' in response
+    assert response == expected_response
 
 
 def test_get_account_by_email_nonexistent_email(get_account_by_email_controller):

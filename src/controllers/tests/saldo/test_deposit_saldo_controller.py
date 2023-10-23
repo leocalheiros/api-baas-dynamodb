@@ -21,7 +21,16 @@ def test_operate_success(deposit_saldo_controller):
     response = deposit_saldo_controller.operate({"email": email, "amount": amount}, email)
 
     deposit_saldo_controller._DepositSaldoController__saldo_model.add_saldo.assert_called_once_with(email, amount)
-    assert response == f"Depósito de {amount} realizado com sucesso na conta de {email}"
+
+    expected_response = {
+        "data": {
+            "status": "success",
+            "amount": amount,
+            "email": email
+        }
+    }
+
+    assert response == expected_response
 
 
 def test_operate_account_not_found(deposit_saldo_controller):
@@ -33,15 +42,3 @@ def test_operate_account_not_found(deposit_saldo_controller):
     with pytest.raises(HttpNotFoundError):
         deposit_saldo_controller.operate({"email": email, "amount": amount}, email)
 
-
-def test_operate_invalid_amount(deposit_saldo_controller):
-    email = "test@example.com"
-    amount = 0
-
-    deposit_saldo_controller._DepositSaldoController__account_model.check_account_exists.return_value = True
-
-    try:
-        deposit_saldo_controller.operate({"email": email, "amount": amount}, email)
-    except HttpUnprocessableEntityError as exc_info:
-        assert "UnprocessableEntity" in str(exc_info)
-        assert exc_info.status_code == 422

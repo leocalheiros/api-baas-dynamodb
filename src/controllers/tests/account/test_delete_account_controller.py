@@ -23,7 +23,14 @@ def test_delete_account_success(delete_account_controller):
         "test@example.com"
     )
 
-    assert response == "Conta deletada com sucesso!"
+    expected_response = {
+        "data": {
+            "status": "success",
+            "email": "test@example.com"
+        }
+    }
+
+    assert response == expected_response
 
 
 def test_delete_account_with_no_existent_account(delete_account_controller):

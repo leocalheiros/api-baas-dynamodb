@@ -25,7 +25,17 @@ def test_operate_success(transfer_saldo_controller):
 
     transfer_saldo_controller._TransferSaldoController__saldo_model.add_saldo.assert_any_call(target_email, amount)
     transfer_saldo_controller._TransferSaldoController__saldo_model.add_saldo.assert_any_call(source_email, -amount)
-    assert response == f"Transferência de {amount} realizada com sucesso da conta de {source_email} para {target_email}"
+
+    expected_response = {
+            "data": {
+                "status": "success",
+                "source_email": source_email,
+                "target_email": target_email,
+                "amount": amount
+            }
+        }
+
+    assert response == expected_response
 
 
 def test_operate_source_account_not_found(transfer_saldo_controller):
