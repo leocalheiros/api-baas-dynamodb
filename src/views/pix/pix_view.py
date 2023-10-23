@@ -2,6 +2,7 @@ from src.views.http_types.http_request import HttpRequest
 from src.views.http_types.http_response import HttpResponse
 from src.views.interface.views_interface import ViewInterface
 from src.controllers.interface.pix_controller_interface import PixControllerInterface
+from src.validators.pix.all_pix_fields_validator import all_pix_fields
 from src.errors.error_handler import handle_errors
 
 
@@ -12,6 +13,7 @@ class PixView(ViewInterface):
     def handle(self, http_request: HttpRequest) -> HttpResponse:
         try:
             request_data = http_request.body
+            all_pix_fields(request_data)
             chavepix = request_data.get("chavepix")
             valor = float(request_data.get("valor"))
             nome = request_data.get("nome")
