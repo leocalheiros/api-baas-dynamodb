@@ -2,7 +2,7 @@
 
 ## Descrição do Projeto
 
-A API BaaS DynamoDB implementa um sistema bancário simples com funcionalidades como criar contas de usuário, excluir contas de usuário, consultar contas de usuário e realizar operações de saldo como depósito, transferência e saque. O projeto foi feito para ser implementado em uma lambda, contendo os arquivos de configuração "samconfig.toml" e "template.yaml"
+A API BaaS DynamoDB implementa um sistema bancário simples com autenticação JWT e funcionalidades como criar contas de usuário, excluir contas de usuário, consultar contas de usuário, realizar operações de saldo como depósito, transferência e saque, e também gerar códigos pix copia e cola. O projeto foi feito para ser implementado em uma lambda, contendo os arquivos de configuração "samconfig.toml" e "template.yaml"
 
 
 ## Configuração do Ambiente
@@ -31,25 +31,34 @@ pip install --target ./package nomedapackage
     "saldo": 100 (int)
 }
 
-### Deletar pessoa
+### Login (token jwt é gerado aqui)
+- **Endpoint**: `/login`
+- **Método**: POST
+- **Entrada**: JSON contendo emai e senha
+- **Exemplo**: {
+    "email": "joao@gmail.com",
+    "senha": "123
+}
+
+### Deletar pessoa (rota protegida com o token_verify)
 
 - **Endpoint**: `/delete-person`
 - **Método**: DELETE
-- **Entrada**: JSON contendo o email da pessoa a ser deletada
+- **Entrada**: JSON contendo o email da pessoa a ser deletada, Bearer token authorization com o token jwt gerado no login, e email que foi gerado o token nos headers.
 - **Exemplo**: {
     "email": "joao@gmail.com",
 }
 
-### Encontrar pessoa por email
+### Encontrar pessoa por email (rota protegida com o token_verify)
 
 - **Endpoint**: `/get-person`
 - **Método**: PUT
-- **Entrada**:  JSON contendo email da pessoa a ser buscada
+- **Entrada**:  JSON contendo email da pessoa a ser buscada, Bearer token authorization com o token jwt gerado no login, e email que foi gerado o token nos headers.
 - **Exemplo**: {
     "name": "joao@gmail.com",
 }
 
-### Depositar saldo
+### Depositar saldo (rota protegida com o token_verify)
 
 - **Endpoint**: `/deposit-saldo`
 - **Método**: POST
@@ -59,28 +68,41 @@ pip install --target ./package nomedapackage
     "amount": 100 (int)
 }
 
-### Transferir saldo entre contas
+### Transferir saldo entre contas (rota protegida com o token_verify)
 
 - **Endpoint**: `/transferir-saldo`
 - **Método**: POST
-- **Entrada**:  JSON contendo source_email, target_email, e amount com a quantia do valor.
+- **Entrada**:  JSON contendo source_email, target_email, amount com a quantia do valor, Bearer token authorization com o token jwt gerado no login, e email que foi gerado o token nos headers.
 - **Exemplo**: {
     "source_email": "joao@gmail.com",
     "target_email": "vitor@gmail.com"
     "amount": 100 (int)
 }
 
-### Sacar saldo
+### Sacar saldo (rota protegida com o token_verify)
 
 - **Endpoint**: `/withdraw-saldo`
 - **Método**: POST
-- **Entrada**:  JSON contendo email da conta e amount com a quantia do valor
+- **Entrada**:  JSON contendo email da conta e amount com a quantia do valor, Bearer token authorization com o token jwt gerado no login, e email que foi gerado o token nos headers.
 - **Exemplo**: {
     "email": "joao@gmail.com",
     "amount": 100 (int)
 }
 
+### Gerar código pix copia e cola
+- **Endpoint**: `/gerar-pix`
+- **Método**: POST
+- **Entrada**:  JSON contendo nome da pessoa que está enviando, chave pix do mesmo, valor do pix a ser gerado e cidade de quem está enviando e opcionalmente o txtId com a mensagem do pix.
+- **Exemplo**: {
+  "nome": "Joao Silva",
+  "chavepix": "+5544993694529",
+  "valor": "10.00",
+  "cidade": "Maringá",
+  "txtId": "LOJA01" (opcional)
+}
+
 ## Informações técnicas:
+- Para garantir a segurança das rotas, foi implementado a lógica de autenticação JWT, onde criamos o token no momento do login e exigimos ele nas outras rotas através de uma função decorator token_verify, onde o token é atrelado ao email do login (que é requerido nos headers juntos com o token para liberar a rota).
 - Para garantir a validação dos campos na requisição, utilizei a biblioteca Cerberus para facilitar esse processo, onde as configurações dela se encontram na pasta `validators` como schema desejado, onde a mesma é chamada nas views dos processos depois.
 - Implementei um tratamento de erros personalizados, retornando esses erros em situações específicas do código, você pode encontrar os mesmos em `/src/errors/`, onde temos a pasta types com os tipos de erros, e o error_handler que será chamado na view para mostrar esses erros personalizados.
 - Foram implementadas interfaces para garantir a conformidade das classes com os contratos especificados, as quais se encontram na pasta `interface` dos módulos do projeto.
