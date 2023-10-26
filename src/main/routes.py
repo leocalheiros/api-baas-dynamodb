@@ -9,6 +9,7 @@ from src.main.composer.saldo.withdraw_saldo_composer import withdraw_saldo_compo
 from src.main.composer.pix.pix_composer import pix_composer
 from src.main.composer.payments.register_credit_card_composer import register_credit_card_composer
 from src.main.composer.payments.create_credit_card_payment_composer import create_credit_card_payment_composer
+from src.main.composer.payments.delete_credit_card_composer import delete_credit_card_composer
 from src.main.adapter.request_adapter import request_adapter
 from src.middlewares.auth_jwt.token_verifier import token_verify
 
@@ -82,6 +83,13 @@ def register_credit_card(next_token):
 @token_verify
 def create_credit_card_payment(next_token):
     http_response = request_adapter(request, create_credit_card_payment_composer(next_token=next_token))
+    return jsonify(http_response.body, http_response.status_code)
+
+
+@payments_blueprint.route('/delete-card', methods=['POST'])
+@token_verify
+def delete_credit_card(next_token):
+    http_response = request_adapter(request, delete_credit_card_composer(next_token=next_token))
     return jsonify(http_response.body, http_response.status_code)
 
 
