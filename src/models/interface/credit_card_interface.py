@@ -9,3 +9,7 @@ class CreditCardRepositoryInterface(ABC):
     @abstractmethod
     def get_credit_card(self, email: str):
         pass
+
+    @abstractmethod
+    def delete_credit_card(self, email: str) -> None:
+        pass

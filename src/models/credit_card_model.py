@@ -19,3 +19,9 @@ class CreditCardModel(CreditCardRepositoryInterface):
         if item and 'credit_card' in item:
             return item['credit_card']
         return None
+
+    def delete_credit_card(self, email: str) -> None:
+        table.update_item(
+            Key={'email': email},
+            UpdateExpression="REMOVE credit_card",
+        )
