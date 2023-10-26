@@ -2,7 +2,7 @@
 
 ## Descrição do Projeto
 
-A API BaaS DynamoDB implementa um sistema bancário simples com autenticação JWT e funcionalidades como criar contas de usuário, excluir contas de usuário, consultar contas de usuário, realizar operações de saldo como depósito, transferência e saque, e também gerar códigos pix copia e cola. O projeto foi feito para ser implementado em uma lambda, contendo os arquivos de configuração "samconfig.toml" e "template.yaml"
+A API BaaS DynamoDB implementa um sistema bancário simples com autenticação JWT e funcionalidades como criar contas de usuário, excluir contas de usuário, consultar contas de usuário, realizar operações de saldo como depósito, transferência e saque, , também gerar códigos pix copia e cola, vincular cartões de crédito ao email do usuário, criar pagamentos fictícios, e deletar o cartão de crédito vinculado. O projeto foi feito para ser implementado em uma lambda, contendo os arquivos de configuração "samconfig.toml" e "template.yaml"
 
 
 ## Configuração do Ambiente
