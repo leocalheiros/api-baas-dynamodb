@@ -140,6 +140,7 @@ pip install --target ./package nomedapackage
 - **Obs**: É feito o decode do base64 pra retornar o número válido do cartão nessa rota, e contextualizar o usuário de qual cartão foi removido.
 
 ## Informações técnicas:
+- Há a presença de testes unitários em todos os controllers, validators e views, totalizando 88 testes em estado "passed"
 - Para garantir a segurança das rotas, foi implementado a lógica de autenticação JWT, onde criamos o token no momento do login e exigimos ele nas outras rotas através de uma função decorator token_verify, onde o token é atrelado ao email do login (que é requerido nos headers juntos com o token para liberar a rota).
 - Para garantir a validação dos campos na requisição, utilizei a biblioteca Cerberus para facilitar esse processo, onde as configurações dela se encontram na pasta `validators` como schema desejado, onde a mesma é chamada nas views dos processos depois.
 - Implementei um tratamento de erros personalizados, retornando esses erros em situações específicas do código, você pode encontrar os mesmos em `/src/errors/`, onde temos a pasta types com os tipos de erros, e o error_handler que será chamado na view para mostrar esses erros personalizados.
