@@ -1,9 +1,9 @@
-import base64
 from src.controllers.interface.account_controller_interface import ControllerInterface
 from src.models.interface.account_interface import AccountRepositoryInterface
 from src.models.interface.credit_card_interface import CreditCardRepositoryInterface
 from src.errors.types.http_unauthorized import HttpUnauthorizedError
 from src.errors.types.http_not_found import HttpNotFoundError
+import base64
 
 
 class TransactionController(ControllerInterface):
@@ -20,9 +20,9 @@ class TransactionController(ControllerInterface):
 
         decoded_card_number = self.__decode_card_number(card_data.get("card_number"))
 
-        # Add transaction process here
+        #add transaction process here
 
-        return {"status": "success", "email": email, "amount": amount, "card_number": decoded_card_number}
+        return self.__format_response(email, decoded_card_number)
 
     def __validate(self, email: str, request_email: str, amount: float, card_data: dict):
         if email != request_email:
@@ -35,3 +35,12 @@ class TransactionController(ControllerInterface):
     def __decode_card_number(self, encoded_card_number: str) -> str:
         decoded_bytes = base64.b64decode(encoded_card_number.encode())
         return decoded_bytes.decode()
+
+    def __format_response(self, email: str, decoded_card_number: str) -> dict:
+        return {
+            "data": {
+                "status": "success",
+                "email": email,
+                "card_number": decoded_card_number
+            }
+        }
