@@ -19,6 +19,11 @@ Caso implemente no lambda, crie a pasta package e instale os requirements nela c
 pip install --target ./package nomedapackage
 ```
 
+## Autenticação JWT (token_verify)
+- **Headers**:
+- **Bearer token gerado no login**
+- **Email do login**
+
 ## Endpoints da API
 ### Criar pessoa
 
@@ -34,7 +39,7 @@ pip install --target ./package nomedapackage
 ### Login (token jwt é gerado aqui)
 - **Endpoint**: `/login`
 - **Método**: POST
-- **Entrada**: JSON contendo emai e senha
+- **Entrada**: JSON contendo email e senha
 - **Exemplo**: {
     "email": "joao@gmail.com",
     "senha": "123
@@ -52,17 +57,17 @@ pip install --target ./package nomedapackage
 ### Encontrar pessoa por email (rota protegida com o token_verify)
 
 - **Endpoint**: `/get-person`
-- **Método**: PUT
+- **Método**: POST
 - **Entrada**:  JSON contendo email da pessoa a ser buscada, Bearer token authorization com o token jwt gerado no login, e email que foi gerado o token nos headers.
 - **Exemplo**: {
-    "name": "joao@gmail.com",
+    "name": "joao@gmail.com"
 }
 
 ### Depositar saldo (rota protegida com o token_verify)
 
 - **Endpoint**: `/deposit-saldo`
 - **Método**: POST
-- **Entrada**:  JSON contendo email da pessoa que vai receber o depósito e amount com a quantia do valor
+- **Entrada**:  JSON contendo email da pessoa que vai receber o depósito e amount com a quantia do valor, Bearer token authorization com o token jwt gerado no login, e email que foi gerado o token nos headers.
 - **Exemplo**: {
     "email": "joao@gmail.com",
     "amount": 100 (int)
@@ -100,6 +105,39 @@ pip install --target ./package nomedapackage
   "cidade": "Maringá",
   "txtId": "LOJA01" (opcional)
 }
+
+### Registrar cartão de crédito vinculado ao email no banco de dados (rota protegida com o token_verify)
+- **Endpoint**: `/register-credit-card`
+- **Método**: POST
+- **Entrada**:  JSON contendo email do usuário (string), card_number (string), expiration_month (int), expiration_year (int), security_code (string), holder_name (string), Bearer token authorization com o token jwt gerado no login, e email que foi gerado o token nos headers.
+- **Exemplo**: {
+    "email": "joao@gmail.com",
+    "card_number": "5502902593408544",
+    "expiration_month": 12,
+    "expiration_year": 2027,
+    "security_code": 123,
+    "holder_name": "Julio Alvarenga"
+}
+- **Obs**: O card_number é salvo em encode base64 no banco de dados, onde temos que decodar esse base64 pra realizar outras operações com ele, visando simular uma "tokenização de cartão" somente a fins de demonstração.
+
+### Criar pagamento fictício (rota protegida com o token_verify)
+- **Endpoint**: `/create-payment`
+- **Método**: POST
+- **Entrada**:  JSON contendo "email" (string) e "amount" (int), Bearer token authorization com o token jwt gerado no login, e email que foi gerado o token nos headers.
+- **Exemplo**: {
+    "email": "joao@gmail.com",
+    "amount": 100
+  }
+- **Obs**: É feito o decode do base64 pra retornar o número válido do cartão nessa rota, e realizar a operação desejada.
+
+### Deletar cartão de crédito (rota protegida com o token_verify)
+- **Endpoint**: `/delete-card`
+- **Método**: POST
+- **Entrada**:  JSON contendo "email" (string), Bearer token authorization com o token jwt gerado no login, e email que foi gerado o token nos headers.
+- **Exemplo**: {
+    "email": "joao@gmail.com",
+  }
+- **Obs**: É feito o decode do base64 pra retornar o número válido do cartão nessa rota, e contextualizar o usuário de qual cartão foi removido.
 
 ## Informações técnicas:
 - Para garantir a segurança das rotas, foi implementado a lógica de autenticação JWT, onde criamos o token no momento do login e exigimos ele nas outras rotas através de uma função decorator token_verify, onde o token é atrelado ao email do login (que é requerido nos headers juntos com o token para liberar a rota).
