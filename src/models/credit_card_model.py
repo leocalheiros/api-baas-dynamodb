@@ -12,3 +12,10 @@ class CreditCardModel(CreditCardRepositoryInterface):
             UpdateExpression="SET credit_card = :card_data",
             ExpressionAttributeValues={':card_data': card_data},
         )
+
+    def get_credit_card(self, email: str):
+        response = table.get_item(Key={'email': email}, ProjectionExpression='credit_card')
+        item = response.get('Item')
+        if item and 'credit_card' in item:
+            return item['credit_card']
+        return None
