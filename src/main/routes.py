@@ -6,11 +6,15 @@ from src.main.composer.account.login_composer import login_composer
 from src.main.composer.saldo.deposit_saldo_composer import deposit_saldo_composer
 from src.main.composer.saldo.transfer_saldo_composer import transfer_saldo_composer
 from src.main.composer.saldo.withdraw_saldo_composer import withdraw_saldo_composer
+from src.main.composer.pix.pix_composer import pix_composer
+from src.main.composer.payments.register_credit_card_composer import register_credit_card_composer
 from src.main.adapter.request_adapter import request_adapter
 from src.middlewares.auth_jwt.token_verifier import token_verify
 
 bank_blueprint = Blueprint('bank', __name__)
 saldo_blueprint = Blueprint('saldo', __name__)
+pix_blueprint = Blueprint('pix', __name__)
+payments_blueprint = Blueprint('payments', __name__)
 
 
 @bank_blueprint.route('/create-person', methods=['POST'])
@@ -57,6 +61,19 @@ def transfer_saldo(next_token):
 @token_verify
 def withdraw_saldo(next_token):
     http_response = request_adapter(request, withdraw_saldo_composer(next_token=next_token))
+    return jsonify(http_response.body, http_response.status_code)
+
+
+@pix_blueprint.route('/gerar-pix', methods=['POST'])
+def gerar_pix():
+    http_response = request_adapter(request, pix_composer())
+    return jsonify(http_response.body, http_response.status_code)
+
+
+@payments_blueprint.route('/register-credit-card', methods=['POST'])
+@token_verify
+def register_credit_card(next_token):
+    http_response = request_adapter(request, register_credit_card_composer(next_token=next_token))
     return jsonify(http_response.body, http_response.status_code)
 
 
