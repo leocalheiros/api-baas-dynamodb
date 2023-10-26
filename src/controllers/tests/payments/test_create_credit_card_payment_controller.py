@@ -36,11 +36,12 @@ def test_transaction_controller_success():
     response = controller.operate(request_data, 'user@example.com')
 
     expected_response = {
-        "status": "success",
-        "email": 'user@example.com',
-        "amount": 100.0,
-        "card_number": "4134185779995000"
-    }
+            "data": {
+                "status": "success",
+                "email": 'user@example.com',
+                "card_number": "4134185779995000"
+            }
+        }
 
     assert response == expected_response
 
