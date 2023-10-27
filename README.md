@@ -60,7 +60,7 @@ pip install --target ./package nomedapackage
 - **Método**: POST
 - **Entrada**:  JSON contendo email da pessoa a ser buscada, Bearer token authorization com o token jwt gerado no login, e email que foi gerado o token nos headers.
 - **Exemplo**: {
-    "name": "joao@gmail.com"
+    "email": "joao@gmail.com"
 }
 
 ### Depositar saldo (rota protegida com o token_verify)
