@@ -115,7 +115,7 @@ pip install --target ./package nomedapackage
     "card_number": "5502902593408544",
     "expiration_month": 12,
     "expiration_year": 2027,
-    "security_code": 123,
+    "security_code": "123",
     "holder_name": "Julio Alvarenga"
 }
 - **Obs**: O card_number é salvo em encode base64 no banco de dados, onde temos que decodar esse base64 pra realizar outras operações com ele, visando simular uma "tokenização de cartão" somente a fins de demonstração.
