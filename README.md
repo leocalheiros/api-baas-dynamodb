@@ -75,7 +75,7 @@ pip install --target ./package nomedapackage
 
 ### Transferir saldo entre contas (rota protegida com o token_verify)
 
-- **Endpoint**: `/transferir-saldo`
+- **Endpoint**: `/transfer-saldo`
 - **Método**: POST
 - **Entrada**:  JSON contendo source_email, target_email, amount com a quantia do valor, Bearer token authorization com o token jwt gerado no login, e email que foi gerado o token nos headers.
 - **Exemplo**: {
