@@ -1,9 +1,5 @@
 import pytest
-import time
-from datetime import datetime, timedelta
-from unittest.mock import patch, Mock
 from src.middlewares.auth_jwt.token_creator import TokenCreator
-from jwt import ExpiredSignatureError, DecodeError
 
 
 @pytest.fixture
