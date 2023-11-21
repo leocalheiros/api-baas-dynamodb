@@ -12,6 +12,14 @@ Antes de executar o projeto, certifique-se de ter as seguintes dependências ins
 ```bash
 pip install -r requirements.txt
 ```
+Certifique-se de criar um arquivo .env seguindo o .env-example
+- Ex:
+```bash
+TOKEN_KEY=1234
+EXP_TIME_MIN=30
+REFRESH_TIME_MIN=15
+```
+
 
 Como o projeto foi feito para rodar em uma lambda, não temos um arquivo de inicialização, porém fique a vontade para criar e testar localmente.
 Caso implemente no lambda, crie a pasta package e instale os requirements nela com:
