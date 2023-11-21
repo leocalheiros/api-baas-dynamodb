@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 jwt_config = {
-    "TOKEN_KEY": "1234",
-    "EXP_TIME_MIN": 30,
-    "REFRESH_TIME_MIN": 15
+    "TOKEN_KEY": os.getenv("TOKEN_KEY"),
+    "EXP_TIME": int(os.getenv("EXP_TIME_MIN")),
+    "REFRESH_TIME_MIN": int(os.getenv("REFRESH_TIME_MIN")),
 }
