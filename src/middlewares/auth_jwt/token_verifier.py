@@ -13,7 +13,10 @@ def token_verify(function: callable) -> callable:
 
         if not raw_token or not email:
             return jsonify({
-                'error': 'Não autorizado, por favor insira os headers necessários'
+                'errors': {
+                    "detail": "Missing authorization",
+                    "title": "MissingAuthorizationError"
+                }
             }), 401
         try:
             token = raw_token.split()[1]
@@ -21,23 +24,38 @@ def token_verify(function: callable) -> callable:
             token_email = token_information["email"]
         except jwt.InvalidSignatureError:
             return jsonify({
-                'error': 'Token inválido'
+                'errors': {
+                    "detail": "Invalid Token",
+                    "title": "InvalidTokenError"
+                }
             }), 401
         except jwt.ExpiredSignatureError:
             return jsonify({
-                'error': 'Token expirado'
+                'errors': {
+                    "detail": "Expired Token",
+                    "title": "ExpiredTokenError"
+                }
             }), 401
         except KeyError as e:
             return jsonify({
-                'error': 'Token inválido'
+                'errors': {
+                    "detail": "Invalid Token",
+                    "title": "InvalidTokenError"
+                }
             }), 401
         except jwt.exceptions.DecodeError:
             return jsonify({
-                'error': 'Token inválido!'
+                'errors': {
+                    "detail": "Invalid Token",
+                    "title": "InvalidTokenError"
+                }
             }), 401
         if token_email != email:
             return jsonify({
-                'error': 'User não permitido'
+                'errors': {
+                    "detail": "User not authorized",
+                    "title": "Unauthorized"
+                }
             }), 401
 
         next_token = token_creator.refresh(token)
